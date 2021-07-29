@@ -62,9 +62,10 @@ func (c *cloudwatchManager) getClient(role, region *string) *cloudwatch.CloudWat
 func (c *cloudwatchManager) QueryCloudWatch(request v1alpha1.ExternalMetric) ([]*cloudwatch.MetricDataResult, error) {
 	role := request.Spec.RoleARN
 	region := request.Spec.Region
+	timeshift := -1
 	cwQuery := toCloudWatchQuery(&request)
 	now := time.Now()
-	endTime := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), 0, 0, now.Location())
+	endTime := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute() + timeshift, 0, 0, now.Location())
 	// CloudWatch metrics have latency, we will grab in a 5 minute window and extract the latest value
 	startTime := endTime.Add(-5 * time.Minute)
 
